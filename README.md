@@ -10,3 +10,9 @@
    2. Все книги ценой не более 500 рублей
    3. Заглавия книг (и год издания) определенного автора, отсортированные по году их издания
    4. Имена авторов книг, вышедших в 1990-е годы
+
+
+1. **MySQL**
+SERIAL is an alias for BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE.
+2. **Postgres**
+   The data types smallserial, serial and bigserial are not true types, but merely a notational convenience for creating unique identifier columns (similar to the AUTO_INCREMENT property supported by some other databases). 
