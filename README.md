@@ -16,3 +16,5 @@
 SERIAL is an alias for BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE.
 2. **Postgres**
    The data types smallserial, serial and bigserial are not true types, but merely a notational convenience for creating unique identifier columns (similar to the AUTO_INCREMENT property supported by some other databases). 
+3. **SQLite**
+   Автоинкремент - аттрибут SQLite, основной целью которого является предотвращение повторного использования значения.
