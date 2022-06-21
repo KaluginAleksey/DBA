@@ -1,60 +1,57 @@
-CREATE TABLE "books"
+CREATE TABLE "shop"
 (
-    "id"     SERIAL,
-    "title"  VARCHAR(200),
-    "year"   INTEGER,
-    "author" VARCHAR(100),
-    "price"  INTEGER
+    "id"          SERIAL,
+    "name"        VARCHAR(150) NOT NULL,
+    "code"        CHAR(10)     NOT NULL,
+    "img"         VARCHAR(150),
+    "price"       NUMERIC(8, 2) CHECK ( price > 0 ),
+    "date"        DATE,
+    "qt"          BIGINT CHECK ( qt >= 0 ),
+    "description" TEXT
 );
 
-CREATE TABLE "publishers"
-(
-    "id"      SERIAL,
-    "name"    VARCHAR(100),
-    "web"     VARCHAR(200),
-    "address" TEXT,
-    "phone"   VARCHAR(11)
-);
+INSERT INTO "shop"
+    ("name", "code", "img", "price", "date", "qt", "description")
+VALUES ('Горный велосипед Giant Talon 29 4 (2022)', 74397, '/upload/models/velo/55222/big.jpg', 66990, '2022-05-25', 5,
+        'Giant Talon 29 4 (2022) – крепкая и легкая модель, созданная подарить вам наслаждение от покорения скоростей
+на различных типах дорог!'),
+       ('Горный велосипед Aspect Nickel 29 (2022)', 70748, '/upload/models/velo/53278/big.jpg', 41490, '2022-04-10', 3,
+        'Aspect Nickel 29 (2022) – элегантная модель, обладающая накатистыми колесами, удобной рамой и продуманным дизайном. '),
+       ('Горный велосипед Merida Big.Nine 60-3x (2022)', 72896, '/upload/models/velo/55561/big.jpg', 72124,
+        '2022-06-01', 52,
+        'Горный велосипед Merida Big.Nine 60-3x (2022) предназначен для скоростной езды по городу и бездорожью.'),
+       ('Женский велосипед Format 7712 27.5 (2022)', 74018, '/upload/models/velo/56549/big.jpg', 63300, '2022-03-05',
+        23,
+        'Format 7712 27.5 (2022) относится к спортивным моделям для фитнеса и спорта.'),
+       ('Горный велосипед Format 1415 29 (2021)', 66065, '/upload/models/velo/51213/big.jpg', 42500, '2021-10-12', 3,
+        'Горный велосипед Format 1415 29 (2021) предназначен преимущественно для городских прогулок и ежедневного фитнеса. ');
 
-INSERT INTO "books"
-("title", "year", "author", "price")
-VALUES ('Обитаемый остров', 1969, 'Аркадий и Борис Стругацкие', 184),
-       ('Автостопом по галактике', 1979, 'Адамс Дуглас', 941),
-       ('Я, робот', 1950, 'Айзек Азимов', 490),
-       ('Марсианские хроники', 1950, 'Рэй Бредбери', 106),
-       ('11/22/63', 2011, 'Стивен Кинг', 434),
-       ('Крещение огнём', 1996, 'Анджей Сапковский', 483),
-       ('Битва королей', 1998, 'Джордж Мартин', 607),
-       ('Час Презрения', 1995, 'Анджей Сапковский', 1032),
-       ('Трудно быть богом', 1963, 'Аркадий и Борис Стругацкие', 284),
-       ('Понедельник начинается в субботу', 1965, 'Аркадий и Борис Стругацкие', 261);
+/*
+Вставка отрицательной цены
+[23514] ERROR: new row for relation "shop" violates check constraint "shop_price_check"
+ */
 
-INSERT INTO "publishers"
-("name", "web", "address", "phone")
-VALUES ('АСТ', 'www.ast.ru', '129085, г. Москва, Звездный бул., д. 21', 4952321625),
-       ('Мещерякова', 'www.idmkniga.ru', '107078, г. Москва, Новая Басманная ул., д. 23, стр. 2, оф. 213', 84952653208),
-       ('Махаон', 'www.machaon.net', '119991, г. Москва, 5-й Донской проезд, д. 15, стр. 4', 84959337601),
-       ('Дрофа', 'www.drofa.ru', '127018, г. Москва, Сущевский вал ул., д. 49', 84957950550),
-       ('Эксмо-Пресс', 'www.eksmo.ru', '127299, г. Москва, Клары Цеткин ул., д. 18/5', 84954116886);
+INSERT INTO "shop"
+    ("name", "code", "img", "price", "date", "qt", "description")
+VALUES ('Горный велосипед Format 1414 29 (2021)', 66063, '/upload/models/velo/51215/big.jpg', -45990, '2021-05-22', 10,
+        'Горный велосипед Format 1414 29 (2021) – лёгкий и надежный компаньон для поездок по пересеченной местности.');
 
+/*
+ Количество на складе менее нуля
+ [23514] ERROR: new row for relation "shop" violates check constraint "shop_qt_check"
+ */
 
--- Все книги определенного автора
-SELECT *
-FROM "books"
-WHERE "author" = 'Аркадий и Борис Стругацкие';
+INSERT INTO "shop"
+    ("name", "code", "img", "price", "date", "qt", "description")
+VALUES ('Горный велосипед Format 1414 29 (2021)', 66063, '/upload/models/velo/51215/big.jpg', 45990, '2021-05-22', -10,
+        'Горный велосипед Format 1414 29 (2021) – лёгкий и надежный компаньон для поездок по пересеченной местности.');
 
--- Все книги ценой не более 500 рублей
-SELECT *
-FROM "books"
-WHERE "price" < 500;
+/*
+ Пустой артикул
+[23502] ERROR: null value in column "code" of relation "shop" violates not-null constraint
+ */
 
--- Заглавия книг (и год издания) определенного автора, отсортированные по году их издания
-SELECT "title", "year"
-FROM "books"
-WHERE "author" = 'Анджей Сапковский'
-ORDER BY "year";
-
--- Имена авторов книг, вышедших в 1990-е годы
-SELECT DISTINCT "author"
-FROM "books"
-WHERE "year" BETWEEN 1990 AND 1999;
+INSERT INTO "shop"
+    ("name", "code", "img", "price", "date", "qt", "description")
+VALUES ('Горный велосипед Format 1414 29 (2021)', NULL, '/upload/models/velo/51215/big.jpg', 45990, '2021-05-22', 10,
+        'Горный велосипед Format 1414 29 (2021) – лёгкий и надежный компаньон для поездок по пересеченной местности.');
