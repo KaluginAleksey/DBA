@@ -7,10 +7,10 @@ class DB
 {
     protected \PDO $dbh;
 
-    public function __construct()
+    public function __construct($base)
     {
         $config = include __DIR__ . '/../Data/config.php';
-        $this->dbh = new \PDO($config['db']['dsn'], $config['db']['user'], $config['db']['password']);
+        $this->dbh = new \PDO($config['db'][$base]['dsn'], $config['db'][$base]['user'], $config['db'][$base]['password']);
     }
 
 

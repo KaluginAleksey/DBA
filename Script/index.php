@@ -13,7 +13,8 @@ function randomDate($start, $end) {
     return date('Y-m-d', $val);
 }
 
-$db = new DB();
+$dbMysql = new DB('mysql');
+$dbPg = new DB('pgsql');
 
 $i = 0;
 
@@ -29,10 +30,15 @@ while ($i < 1000) {
         ':qt' => rand(0, 3000),
     ];
 
-    $db->execute("INSERT INTO shop
+    $dbMysql->execute("INSERT INTO shop
     (num, name, price, old_price, img, date, qt)
 VALUES (:num, :name, :price, :old_price, :img, :date, :qt)"
     , $data);
+
+    $dbPg->execute("INSERT INTO shop
+    (num, name, price, old_price, img, date, qt)
+VALUES (:num, :name, :price, :old_price, :img, :date, :qt)"
+        , $data);
 
     $i++;
 }
