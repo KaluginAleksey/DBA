@@ -4,7 +4,7 @@ CREATE TABLE "shop"
     "name"        VARCHAR(150) NOT NULL,
     "code"        CHAR(10)     NOT NULL,
     "img"         VARCHAR(150),
-    "price"       NUMERIC(8, 2) CHECK ( price > 0 ),
+    "price"       NUMERIC(8, 2) CHECK ( "price" > 0 ),
     "date"        DATE,
     "qt"          BIGINT CHECK ( qt >= 0 ),
     "description" TEXT
