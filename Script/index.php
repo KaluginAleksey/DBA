@@ -28,16 +28,18 @@ while ($i < 1000) {
         ':img' => '/img/pic' . $i . '.jpg',
         ':date' => randomDate('2014-10-01', '2022-06-27'),
         ':qt' => rand(0, 3000),
+        ':id_category' => rand(1, 3),
+        ':id_brand' => rand(1, 7)
     ];
 
     $dbMysql->execute("INSERT INTO shop
-    (num, name, price, old_price, img, date, qt)
-VALUES (:num, :name, :price, :old_price, :img, :date, :qt)"
+    (num, name, price, old_price, img, date, qt, id_category, id_brand)
+VALUES (:num, :name, :price, :old_price, :img, :date, :qt, :id_category, :id_brand)"
     , $data);
 
     $dbPg->execute("INSERT INTO shop
-    (num, name, price, old_price, img, date, qt)
-VALUES (:num, :name, :price, :old_price, :img, :date, :qt)"
+    (num, name, price, old_price, img, date, qt, id_category, id_brand)
+VALUES (:num, :name, :price, :old_price, :img, :date, :qt, :id_category, :id_brand)"
         , $data);
 
     $i++;

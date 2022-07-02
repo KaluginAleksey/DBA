@@ -1,54 +1,71 @@
 CREATE TABLE `shop`
 (
-    `id`        SERIAL,
-    `num`       CHAR(10)               NOT NULL UNIQUE,
-    `name`      VARCHAR(150)           NOT NULL,
-    `price`     DECIMAL(8, 2) UNSIGNED NOT NULL,
-    `old_price` DECIMAL(8, 2) DEFAULT NULL,
-    `img`       VARCHAR(200),
-    `date`      DATE,
-    `qt`        BIGINT UNSIGNED,
-    PRIMARY KEY (`id`)
+    `id`          SERIAL PRIMARY KEY,
+    `num`         CHAR(10)               NOT NULL UNIQUE,
+    `name`        VARCHAR(150)           NOT NULL,
+    `price`       DECIMAL(8, 2) UNSIGNED NOT NULL,
+    `old_price`   DECIMAL(8, 2) DEFAULT NULL,
+    `img`         VARCHAR(200),
+    `date`        DATE,
+    `qt`          BIGINT UNSIGNED,
+    `id_category` BIGINT,
+    `id_brand`    BIGINT
 );
 
+CREATE TABLE `category`
+(
+    `id`  SERIAL PRIMARY KEY,
+    `cat` VARCHAR(100)
+);
 
--- Выбирают 10 самых новых товаров
--- execution: 61 ms, fetching: 82 ms
--- execution: 34 ms, fetching: 70 ms после добавления индекса `date_idx`
--- Backward index scan
-EXPLAIN
-SELECT *
-FROM `shop`
-ORDER BY `date`
-        DESC
-LIMIT 10;
+CREATE TABLE `brand`
+(
+    `id`   SERIAL PRIMARY KEY,
+    `name` VARCHAR(100)
+);
 
--- Выбирают 10 самых дешевых товаров
--- execution: 35 ms, fetching: 81 ms
+INSERT INTO `category`
+    (`cat`)
+VALUES ('Еда'),
+       ('Посуда'),
+       ('Обувь');
 
-EXPLAIN
-SELECT *
-FROM `shop`
-ORDER BY `price`
-LIMIT 10;
+INSERT INTO `brand`
+    (`name`)
+VALUES ('Nestle'),
+       ('Данон'),
+       ('Красный Октябрь'),
+       ('Tefal'),
+       ('ВСМПО'),
+       ('Reebok'),
+       ('Adidas');
 
--- Выбирают 10 товаров, цена на которых была максимально снижена (в абсолютном или относительном смысле)
--- execution: 25 ms, fetching: 57 ms
+ALTER TABLE `shop`
+    ADD FOREIGN KEY
+        (`id_category`)
+        REFERENCES `category` (`id`)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE;
 
-EXPLAIN SELECT *
-FROM `shop`
-WHERE `old_price` IS NOT NULL
-ORDER BY (`price` - `old_price`)
-LIMIT 10;
+ALTER TABLE `shop`
+    ADD FOREIGN KEY
+        (`id_brand`)
+        REFERENCES `brand` (`id`)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE;
 
--- Выбирают те товары, чей артикул начинается с символов "TEST" (такие товары должны быть в таблице!), используя оператор LIKE
--- execution: 18 ms, fetching: 43 ms
--- после добавления индекса
--- execution: 20 ms, fetching: 54 ms
--- отображается добавленный индекс в поле possible_keys. Using index condition
-EXPLAIN SELECT *
-FROM `shop`
-WHERE `num` LIKE 'TEST%';
+-- Выборка всех товаров с указанием их категории и бренда
 
-CREATE INDEX `num_idx` ON `shop` (`num`);
-CREATE INDEX `date_idx` ON `shop` (`date`);
+SELECT *,
+       (SELECT cat FROM category WHERE category.id = shop.id_category) AS category,
+       (SELECT name FROM brand WHERE brand.id = shop.id_brand)         AS brand
+FROM shop;
+
+-- Выборка всех товаров, бренд которых начинается на букву "А"
+
+SELECT * FROM shop
+                  INNER JOIN brand AS b ON shop.id_brand = b.id
+WHERE b.name LIKE ('A%');
+
+-- Выведут список категорий и число товаров в каждой (используйте подзапросы и функцию COUNT(), использовать группировку нельзя)
+
