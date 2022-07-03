@@ -8,8 +8,8 @@ CREATE TABLE `shop`
     `img`         VARCHAR(200),
     `date`        DATE,
     `qt`          BIGINT UNSIGNED,
-    `id_category` BIGINT,
-    `id_brand`    BIGINT
+    `id_category` BIGINT UNSIGNED,
+    `id_brand`    BIGINT UNSIGNED
 );
 
 CREATE TABLE `category`
