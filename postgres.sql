@@ -54,3 +54,11 @@ ALTER TABLE "shop"
     ON DELETE RESTRICT
        ON UPDATE CASCADE;
 
+-- Запрос, который выберет категории и среднюю цену товаров в каждой категории, при условии,
+-- что эта средняя цена менее 1000 рублей (выбираем "бюджетные" категории товаров)
+
+SELECT cat, AVG(price)
+FROM shop
+         INNER JOIN category c ON shop.id_category = c.id
+GROUP BY cat
+HAVING AVG(price) < 1000;
