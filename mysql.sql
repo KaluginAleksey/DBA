@@ -7,9 +7,9 @@ CREATE TABLE `shop`
     `old_price`   DECIMAL(8, 2) DEFAULT NULL,
     `img`         VARCHAR(200),
     `date`        DATE,
-    `qt`          BIGINT UNSIGNED,
-    `id_category` BIGINT,
-    `id_brand`    BIGINT
+    `qt`          BIGINT UNSIGNED NULL ,
+    `id_category` BIGINT UNSIGNED,
+    `id_brand`    BIGINT UNSIGNED
 );
 
 CREATE TABLE `category`
@@ -54,32 +54,3 @@ ALTER TABLE `shop`
         ON DELETE RESTRICT
         ON UPDATE CASCADE;
 
--- Выборка всех товаров с указанием их категории и бренда
-
-SELECT *,
-       (SELECT cat FROM category WHERE category.id = shop.id_category) AS category,
-       (SELECT name FROM brand WHERE brand.id = shop.id_brand)         AS brand
-FROM shop;
-
--- Выборка всех товаров, бренд которых начинается на букву "А"
-
-SELECT *
-FROM shop
-         INNER JOIN brand AS b ON shop.id_brand = b.id
-WHERE b.name LIKE ('A%');
-
--- Выведут список категорий и число товаров в каждой (используйте подзапросы и функцию COUNT(), использовать группировку нельзя)
-
-SELECT cat,
-       (SELECT COUNT(*)
-        FROM shop
-        WHERE id_category = category.id) AS ammount
-FROM category;
-
--- Выберут для каждой категории список брендов товаров, входящих в нее
-
-SELECT DISTINCT cat, b.name
-FROM shop
-         LEFT JOIN category с on shop.id_category = с.id
-         LEFT JOIN brand b on shop.id_brand = b.id
-ORDER BY cat;
