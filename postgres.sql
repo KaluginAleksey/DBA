@@ -66,3 +66,18 @@ FROM shop;
 SELECT * FROM shop
 INNER JOIN brand AS b ON shop.id_brand = b.id
 WHERE b.name LIKE ('A%');
+
+-- Выведут список категорий и число товаров в каждой (используйте подзапросы и функцию COUNT(), использовать группировку нельзя)
+
+SELECT cat,
+       (SELECT COUNT(*) FROM shop
+        WHERE id_category = category.id) AS ammount
+FROM category;
+
+-- Выберут для каждой категории список брендов товаров, входящих в нее
+
+SELECT DISTINCT cat, b.name
+FROM shop
+         LEFT JOIN category с on shop.id_category = с.id
+         LEFT JOIN brand b on shop.id_brand = b.id
+ORDER BY cat;
