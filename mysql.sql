@@ -114,7 +114,7 @@ SELECT DATE(o.date) AS date,
        SUM(price)   AS sum,
        (CASE
            WHEN price < 500 THEN 'Дешевый товар'
-           WHEN price >= 500 AND price < 1000 THEN 'Средний товар'
+           WHEN price >= 500 AND price < 1000 THEN 'Средняя цена'
            WHEN price >= 1000 THEN 'Дорогой товар'
            END) AS feature
 FROM orders AS o
