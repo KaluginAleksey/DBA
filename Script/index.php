@@ -27,7 +27,7 @@ while ($i < 1000) {
         ':old_price' => rand(10, 2000),
         ':img' => '/img/pic' . $i . '.jpg',
         ':date' => randomDate('2014-10-01', '2022-06-27'),
-        ':qt' => rand(10, 3000),
+        ':qt' => rand(0, 3000),
         ':id_category' => rand(1, 3),
         ':id_brand' => rand(1, 7)
     ];
