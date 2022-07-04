@@ -59,7 +59,7 @@ ALTER TABLE `shop`
 
 SELECT cat, AVG(price)
 FROM shop
-         INNER JOIN category c ON shop.id_category = c.id
+         INNER JOIN category AS c ON shop.id_category = c.id
 GROUP BY cat
 HAVING AVG(price) < 1000;
 
@@ -67,7 +67,7 @@ HAVING AVG(price) < 1000;
 
 SELECT cat, AVG(price)
 FROM shop
-         INNER JOIN category c ON shop.id_category = c.id
+         INNER JOIN category AS c ON shop.id_category = c.id
 WHERE qt > 0
 GROUP BY cat
 HAVING AVG(price) < 1000;
@@ -83,8 +83,8 @@ ALTER TABLE `brand`
 
 SELECT cat, class, AVG(price)
 FROM shop
-         INNER JOIN brand b ON shop.id_brand = b.id
-         INNER JOIN category c ON id_category = c.id
+         INNER JOIN brand AS b ON shop.id_brand = b.id
+         INNER JOIN category AS c ON id_category = c.id
 GROUP BY cat, class
 ORDER BY cat;
 
@@ -100,9 +100,9 @@ CREATE TABLE `orders`
 
 -- Напишите запрос, который выведет таблицу с полями "дата", "число заказов за дату", "сумма заказов за дату".
 
-SELECT DATE(o.date) AS date, COUNT(o.id) as amount, SUM(price) as sum
+SELECT DATE(o.date) AS date, COUNT(o.id) AS amount, SUM(price) AS sum
 FROM orders AS o
-         INNER JOIN shop s on o.product = s.id
+         INNER JOIN shop AS s ON o.product = s.id
 GROUP BY DATE(o.date);
 
 -- Улучшите этот запрос, введя группировку по признаку "дешевый товар", "средняя цена", "дорогой товар".
@@ -110,14 +110,14 @@ GROUP BY DATE(o.date);
 -- "группа по цене", "число заказов", "сумма заказов"
 
 SELECT DATE(o.date) AS date,
-       COUNT(o.id)  as amount,
-       SUM(price)   as sum,
+       COUNT(o.id)  AS amount,
+       SUM(price)   AS sum,
        (CASE
            WHEN price < 500 THEN 'Дешевый товар'
            WHEN price >= 500 AND price < 1000 THEN 'Средний товар'
            WHEN price >= 1000 THEN 'Дорогой товар'
            END) AS feature
 FROM orders AS o
-         INNER JOIN shop s on o.product = s.id
+         INNER JOIN shop s ON o.product = s.id
 GROUP BY DATE(o.date), feature
 ORDER BY DATE(o.date) DESC;
