@@ -97,5 +97,5 @@ CREATE TRIGGER
 BEGIN
     INSERT INTO `history_changes_goods`
         (`good_id`, `event`, `old_price`, `new_price`)
-    VALUES (NEW.`id`, 'price', NEW.old_price, NEW.price);
+    VALUES (NEW.`id`, 'price', NEW.`old_price`, NEW.`price`);
 END;
