@@ -32,12 +32,21 @@ VALUES (24, 'price', 2800, 3000),
 -- Новые товары
 
 CREATE VIEW new_goods AS
-SELECT shop.id, shop.num, shop.name, shop.price, shop.old_price, shop.img, shop.date, shop.qt
+SELECT shop.id,
+       shop.num,
+       shop.name,
+       shop.price,
+       shop.old_price,
+       shop.img,
+       shop.date,
+       shop.qt
 FROM shop
          INNER JOIN hystory_changes_goods hcg on shop.id = hcg.goods_id
-WHERE event = 'create' AND  DATEDIFF(CURRENT_TIMESTAMP, timestamp) <=3;
+WHERE event = 'create'
+  AND DATEDIFF(CURRENT_TIMESTAMP, timestamp) <= 3;
 
-SELECT * FROM new_goods;
+SELECT *
+FROM new_goods;
 
 -- Товары, цена которых изменялась не менее 3 раз
 
@@ -49,4 +58,44 @@ WHERE event = 'price'
 GROUP BY goods_id
 HAVING count_event >= 3;
 
-SELECT * FROM more_3_changes;
+SELECT *
+FROM more_3_changes;
+
+-- Триггер на создание записи в таблице
+
+CREATE TRIGGER
+    `create`
+    AFTER INSERT
+    ON `shop`
+    FOR EACH ROW
+BEGIN
+    INSERT INTO `history_changes_goods`
+        (`good_id`, `event`, `new_price`)
+    VALUES (NEW.`id`, 'create', NEW.`price`);
+END;
+
+-- Триггер на удаление записи из таблицы
+
+CREATE TRIGGER
+    `delete`
+    BEFORE DELETE
+    ON `shop`
+    FOR EACH ROW
+BEGIN
+    INSERT INTO `history_changes_goods`
+        (`good_id`, `event`, `old_price`, `new_price`)
+    VALUES (OLD.`id`, 'delete', OLD.`old_price`, OLD.`price`);
+END;
+
+-- Триггер на изменение цены
+
+CREATE TRIGGER
+    `change_price`
+    BEFORE UPDATE
+    ON `shop`
+    FOR EACH ROW
+BEGIN
+    INSERT INTO `history_changes_goods`
+        (`good_id`, `event`, `old_price`, `new_price`)
+    VALUES (NEW.`id`, 'price', NEW.old_price, NEW.price);
+END;
