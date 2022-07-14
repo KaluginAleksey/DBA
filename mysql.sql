@@ -1,4 +1,4 @@
-CREATE TABLE `hystory_changes_goods`
+CREATE TABLE `history_changes_goods`
 (
     `id`        SERIAL PRIMARY KEY,
     `goods_id`  BIGINT UNSIGNED NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE `hystory_changes_goods`
 );
 
 
-INSERT INTO `hystory_changes_goods`
+INSERT INTO `history_changes_goods`
     (`goods_id`, `event`)
 VALUES (24, 'create'),
        (25, 'create'),
@@ -18,7 +18,7 @@ VALUES (24, 'create'),
        (1, 'delete'),
        (2, 'delete');
 
-INSERT INTO `hystory_changes_goods`
+INSERT INTO `history_changes_goods`
     (`goods_id`, `event`, `old_price`, `new_price`)
 VALUES (24, 'price', 2800, 3000),
        (24, 'price', 3000, 2950),
@@ -41,7 +41,7 @@ SELECT shop.id,
        shop.date,
        shop.qt
 FROM shop
-         INNER JOIN hystory_changes_goods hcg on shop.id = hcg.goods_id
+         INNER JOIN history_changes_goods hcg on shop.id = hcg.goods_id
 WHERE event = 'create'
   AND DATEDIFF(CURRENT_TIMESTAMP, timestamp) <= 3;
 
@@ -52,7 +52,7 @@ FROM new_goods;
 
 CREATE VIEW more_3_changes AS
 SELECT s.*, COUNT(goods_id) AS count_event
-FROM hystory_changes_goods AS hcg
+FROM history_changes_goods AS hcg
          INNER JOIN shop s on hcg.goods_id = s.id
 WHERE event = 'price'
 GROUP BY goods_id
@@ -70,7 +70,7 @@ CREATE TRIGGER
     FOR EACH ROW
 BEGIN
     INSERT INTO `history_changes_goods`
-        (`good_id`, `event`, `new_price`)
+        (`goods_id`, `event`, `new_price`)
     VALUES (NEW.`id`, 'create', NEW.`price`);
 END;
 
@@ -83,7 +83,7 @@ CREATE TRIGGER
     FOR EACH ROW
 BEGIN
     INSERT INTO `history_changes_goods`
-        (`good_id`, `event`, `old_price`, `new_price`)
+        (`goods_id`, `event`, `old_price`, `new_price`)
     VALUES (OLD.`id`, 'delete', OLD.`old_price`, OLD.`price`);
 END;
 
@@ -96,6 +96,6 @@ CREATE TRIGGER
     FOR EACH ROW
 BEGIN
     INSERT INTO `history_changes_goods`
-        (`good_id`, `event`, `old_price`, `new_price`)
+        (`goods_id`, `event`, `old_price`, `new_price`)
     VALUES (NEW.`id`, 'price', NEW.`old_price`, NEW.`price`);
 END;
