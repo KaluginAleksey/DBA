@@ -99,3 +99,17 @@ BEGIN
         (`goods_id`, `event`, `old_price`, `new_price`)
     VALUES (NEW.`id`, 'price', NEW.`old_price`, NEW.`price`);
 END;
+
+-- "размер скидки", которая по ID товара вычисляет сколько составило последнее изменение цены на него в процентах
+
+DELIMITER $$$
+CREATE FUNCTION amount_of_discount(g_id BIGINT)
+    RETURNS DECIMAL
+BEGIN
+    RETURN (SELECT ((`new_price` * 100 / `old_price`) - 100)
+            FROM history_changes_goods
+            WHERE id = g_id);
+END $$$;
+DELIMITER $$$;
+
+SELECT amount_of_discount(4);
