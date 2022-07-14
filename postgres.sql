@@ -60,7 +60,7 @@ ALTER TABLE "shop"
 SELECT cat, AVG(price)
 FROM shop
          INNER JOIN category AS c ON shop.id_category = c.id
-GROUP BY cat
+GROUP BY c.id
 HAVING AVG(price) < 1000;
 
 -- Улучшите предыдущий запрос таким образом, чтобы в расчет средней цены включались только товары, имеющиеся на складе.
@@ -69,7 +69,7 @@ SELECT cat, AVG(price)
 FROM shop
          INNER JOIN category AS c ON shop.id_category = c.id
 WHERE qt > 0
-GROUP BY cat
+GROUP BY c.id
 HAVING AVG(price) < 1000;
 
 -- Добавьте к таблице брендов класс бренда (A, B, C). Например, A - Apple, B - Samsung, C - Xiaomi.
@@ -84,8 +84,8 @@ SELECT cat, class, AVG(price)
 FROM shop
          INNER JOIN brand AS b ON shop.id_brand = b.id
          INNER JOIN category AS c ON id_category = c.id
-GROUP BY cat, class
-ORDER BY cat;
+GROUP BY c.id, class
+ORDER BY c.id;
 
 -- Добавьте к своей базе данных таблицу заказов. Простейший вариант - номер заказа, дата и время, ID товара.
 
