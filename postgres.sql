@@ -25,13 +25,13 @@ CREATE TABLE "brand"
 );
 
 INSERT INTO "category"
-("cat")
+    ("cat")
 VALUES ('Еда'),
        ('Посуда'),
        ('Обувь');
 
 INSERT INTO "brand"
-("name")
+    ("name")
 VALUES ('Nestle'),
        ('Данон'),
        ('Красный Октябрь'),
@@ -57,7 +57,7 @@ ALTER TABLE "shop"
 -- Перепроектируйте таблицу товаров, используя поле categories bigint[]
 
 ALTER TABLE "shop"
-    ADD "categories" BIGINT[];
+ADD "categories" BIGINT[];
 
 -- Выбирающий все товары из заданной категории
 
@@ -68,8 +68,8 @@ WHERE 3=ANY(shop.categories);
 
 SELECT cat AS categories, count(*) AS number_of_goods
 FROM shop
-         INNER JOIN category on category.id = ANY(shop.categories)
+INNER JOIN category on category.id = ANY(shop.categories)
 GROUP BY category.id;
 
 -- Добавляющий определенный товар в определенную категорию (вам придется найти нужную функцию для работы с массивами)
---
+
