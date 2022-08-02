@@ -73,3 +73,5 @@ GROUP BY category.id;
 
 -- Добавляющий определенный товар в определенную категорию (вам придется найти нужную функцию для работы с массивами)
 
+UPDATE shop SET categories = array_append(categories,3)
+WHERE id = 49;
